@@ -14,12 +14,12 @@
 
 To get started with TaskForge, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/antrikshnarang/TaskForge`
+1. Clone the repository: `git clone https://github.com/AntrikshNarang/TaskForge`
 2. Navigate to the frontend and backend directory: `cd frontend` && `cd backend`
 3. Install dependencies: `npm install`
 4. Configure the database connection settings in `.env`. (sample .env.example provided)
 5. Run the application frontend: `npm run dev`
-5. Run the application backend: `nodemon server.js`
+5. Run the application backend: `node server.js`
 6. Access the application in your web browser at `http://localhost:5173/login`.
 
 ## Dependencies
