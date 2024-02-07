@@ -3,12 +3,11 @@
 ## Features
 
 - **Project Management:** Create, manage, and organize projects with ease.
+- **Project Breakdown:** Split Project into smaller sub tasks.
 - **Task Assignment:** Assign tasks to team members and track their progress.
-- **Collaboration:** Engage in real-time discussions with team members through comments.
-- **File Management:** Upload and share files related to tasks within projects.
-- **Notifications:** Stay updated with personalized notifications for task assignments, comments, and more.
 - **Data Integrity:** Built with a reliable database schema to ensure data integrity and security.
-- **Scalability:** Designed for scalability to accommodate growing teams and projects.
+- **Multiple Dashboards:** Separate dashboard for user and admin. 
+- **Data-Leak Protection:** Passwords are hashed and then stored, thus maintaining user trust.
 
 ## Getting Started
 
@@ -24,7 +23,7 @@ To get started with TaskForge, follow these steps:
 
 ## Dependencies
 
-TaskFlow Pro relies on the following dependencies:
+TaskForge relies on the following dependencies:
 
 - Node.js
 - Express.js
@@ -44,7 +43,7 @@ TaskFlow Pro relies on the following dependencies:
 - /api/auth/login
 ### User Dashboard
 - /api/user/gettasks
-- /api/taskcomplete/:id
+- /api/user/taskcomplete/:id
 ### Admin Dashboard
 - /api/admin/gettasks
 - /api/admin/getprojects
