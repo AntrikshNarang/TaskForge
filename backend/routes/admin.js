@@ -80,7 +80,7 @@ router.get('/getusers', fetchuser, async(req, res) => {
         console.log(req.user)
         const id = req.user.id;
         let users;
-        db.query(`SELECT uId, name from user`, (err, result) => {
+        db.query(`SELECT uId, name, (select count(*) from tasks t where t.uId = u.uId) as taskCount from user u order by taskCount`, (err, result) => {
             if (err) {
                 throw err;
             }
@@ -105,6 +105,38 @@ router.post('/createtask', fetchuser, async(req, res) => {
             task = result;
             return res.status(200).json({ success: true, task });
         });
+    } catch (error) {
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+})
+
+
+router.get('/getprojecttasks/:id', fetchuser, async(req, res) => {
+    try {
+        const id = req.params.id;
+        let project;
+        db.query(`SELECT *, (SELECT name from user where user.uId = tasks.uId) as assignedUser FROM tasks WHERE pId = ${id}`, (err, result) => {
+            if (err) {
+                throw err;
+            }
+            project = result;
+            return res.status(200).json({ success: true, project });
+        });
+    } catch (error) {
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+})
+
+router.delete('/removeProject/:id', fetchuser, async(req, res) => {
+    try {
+        const id = req.params.id;
+        db.query(`DELETE FROM tasks where tasks.pId = ${id}`, (err, result) => {
+            if(err) throw err;
+            db.query(`DELETE FROM project WHERE pId = ${id}`, (er, resl) => {
+                if(er) throw er;
+                return res.status(200).json({success: true, message: 'Project Deleted successfully'});
+            })
+        })
     } catch (error) {
         return res.status(500).json({ success: false, error: 'Internal Server Error' });
     }

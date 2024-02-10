@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react"
 import Modal from "../Modal/Modal";
+import { Link, useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
+    const navigate = useNavigate();
     const [Tasks, setTasks] = useState([]);
     const [showModal, setShowModal] = useState<null | string>(null);
     const [Projects, setProjects] = useState([]);
@@ -87,7 +89,7 @@ const AdminDashboard = () => {
           console.log(json);
           setUsers(json.users);
     }
-    function openModalForTasks(pId: number){
+    function openModalForTasks(e, pId: number){
         setShowModal('Add Tasks');
         setcurrentProjectNumber(pId);
         setCurrentUser(null);
@@ -127,7 +129,27 @@ const AdminDashboard = () => {
             console.log(json);
             getTasks();
       }
-    
+      async function removeProject(pId: string) {
+        const response = await fetch(
+            `${import.meta.env.VITE_BACKEND_URL}/api/admin/removeproject/${pId}`,
+            {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "auth-token": localStorage.getItem("token") == null ? undefined : localStorage.getItem("token"),
+                },
+            }
+            );
+            const json = await response.json();
+            console.log(json);
+            getProjects();
+            getTasks();
+      }
+
+      function navigateToProjectPage(pId, name){
+        navigate(`/project/${pId}/${name}`)
+      }
+
   return (
     <div>
         <div className="min-h-screen bg-slate-300 p-3 w-[100%]">
@@ -146,16 +168,29 @@ const AdminDashboard = () => {
                     </div>
                        {Projects?.map((project) => {
                             return(
-                                <div className="border-[3px] border-slate-500 rounded-lg px-2 py-2 flex flex-col gap-1" key={project['Project ID']}>
+                                <div title="Open Project Page" onClick={() => navigateToProjectPage(project['Project ID'], project['Project Name'])} className="border-[3px] border-slate-500 rounded-lg px-2 py-2 flex flex-col gap-1 hover:cursor-pointer" key={project['Project ID']}>
                                     <p className="text-lg font-sans font-medium">
                                     Project Name: {project["Project Name"]}
                                     </p>
                                     <p className="text-lg font-sans font-medium">
                                     Project Description: {project["Project Description"]}
                                     </p>
-                                    <button className="bg-slate-500 px-2 py-1 rounded-md font-sans w-min whitespace-nowrap" onClick={() => openModalForTasks(project['Project ID'])}>
+                                    <div className="flex gap-2">
+                                    <button className="bg-slate-500 px-2 py-1 rounded-md font-sans w-min whitespace-nowrap" title="Add Task to Project" 
+                                        onClick={(e) => {
+                                            e.stopPropagation(); 
+                                            openModalForTasks(e, project['Project ID'])
+                                            }}>
                                         Add Task
                                     </button>
+                                    <button className="bg-slate-500 px-2 py-1 rounded-md font-sans w-min whitespace-nowrap" title="Remove Project" 
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        removeProject(project['Project ID'])
+                                        }}>
+                                        Remove Project
+                                    </button>
+                                    </div>
                                 </div>
                             )
                        })}
@@ -203,13 +238,29 @@ const AdminDashboard = () => {
                     <div className="bg-white p-2 rounded-md my-2">
                        Select User to which the task should be assigned to:
                        <div className="overflow-y-auto max-h-40">
-                        {Users?.map((user) => {
+                           {/* // make a table with all available users and their task count */}
+                        <table>
+                            <tr>
+                                <th className="border-r-2 border-r-slate-500">Name of User</th>
+                                <th className="pl-1">Assigned Tasks</th>
+                            </tr>
+                            {Users?.map((user) => {
+                                return(
+                                    <tr className="border-t border-t-slate-500 py-1 hover:cursor-pointer" onClick={() => setCurrentUser(user)} key={user['uId']}>
+                                        <td className="border-r-2 border-r-slate-500">{user['name']}</td>
+                                        <td className="pl-1">{user['taskCount']}</td>
+                                    </tr>
+                                    )
+                            })}
+                        </table>
+
+                        {/* {Users?.map((user) => {
                             return(
-                                <div className="border-t border-t-slate-500 py-1 hover:cursor-pointer" onClick={() => setCurrentUser(user)} key={user['uId']}>
-                                    <p>{user['name']}</p>
-                                </div>
+                                // <div className="border-t border-t-slate-500 py-1 hover:cursor-pointer" onClick={() => setCurrentUser(user)} key={user['uId']}>
+                                //     <p>{user['name']}</p>
+                                // </div>
                                 )
-                        })}
+                        })} */}
                        </div>
                     </div>
                     {currentUser && <p className="bg-white p-2 rounded-md my-2">Currently Selected User: <b>{currentUser?.name}</b></p>}
