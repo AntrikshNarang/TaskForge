@@ -57,7 +57,7 @@ const Login: React.FC<LoginProps> = ({ settoken }) => {
   }
   return (
     <div className="main-div" >
-      <form className="center-div">
+      <div className="center-div">
         <h1>Login</h1>
         <InputForm label='User Name' placeholder='Enter your username' type='text'
           onChange={(e) => { setparams((prev) => ({ ...prev, name: e.target.value })) }} />
@@ -72,7 +72,7 @@ const Login: React.FC<LoginProps> = ({ settoken }) => {
         {ErrorMsg && <p className="ErrorMsg">{ErrorMsg}</p>}
         <button onClick={handleSubmit}>Login</button>
         <p>New User? <span><Link className='footer-link' to='/signup'>Sign Up</Link></span></p>
-      </form>
+      </div>
     </div >
   )
 }
