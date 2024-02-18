@@ -92,8 +92,7 @@ router.post(
         let sql = "INSERT INTO admin SET ?";
         db.query(sql, admin, (err, result) => {
           if (err) throw err;
-          console.log(result);
-          const authToken = jwt.sign({ user: { name: result.name, id: result.adminId }}, JWT_SECRET);
+          const authToken = jwt.sign({ user: { name: req.body.name, id: result.insertId }}, JWT_SECRET);
           res
             .status(200)
             .json({ success: true, message: "Admin has been created successfully", role: 'admin' , authToken});
@@ -107,7 +106,7 @@ router.post(
         db.query(sql, user, (err, result) => {
           if (err) throw err;
           console.log(result);
-          const authToken = jwt.sign({ user: { name: result.name, id: result.uId }}, JWT_SECRET)
+          const authToken = jwt.sign({ user: { name: req.body.name, id: result.insertId }}, JWT_SECRET);
           res
             .status(200)
             .json({ success: true, message: "User has been created successfully", role: 'user' , authToken});
